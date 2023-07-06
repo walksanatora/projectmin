@@ -10,4 +10,4 @@ for file in $(find "$(dirname $0)/exported" -type f -name "*.lua"); do
     mv tmp "$file"
 done
 cd exported
-vfstool-rs -d . -cf -a projects.sea
+vfstool-rs -d . -cs -a ../project.sea

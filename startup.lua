@@ -1,32 +1,33 @@
 --#region setup
-
-function print(...)
-    for _, k in pairs({ ... }) do
-        write(k)
-        write(" ")
-    end
-    write("\n")
-end
-
-function write(...)
-    local first = true
-    local log = fs.open("log.txt", "a")
-    local line = ""
-    for _, thing in pairs({ ... }) do
-        if first then
-            line = line .. tostring(thing)
-        else
-            line = line .. " " .. tostring(thing)
+if _HEADLESS then
+    function print(...)
+        for _, k in pairs({ ... }) do
+            write(k)
+            write(" ")
         end
+        write("\n")
     end
-    log.write(line)
-    log.close()
-end
 
+    function write(...)
+        local first = true
+        local log = fs.open("log.txt", "a")
+        local line = ""
+        for _, thing in pairs({ ... }) do
+            if first then
+                line = line .. tostring(thing)
+            else
+                line = line .. " " .. tostring(thing)
+            end
+        end
+        log.write(line)
+        log.close()
+    end
+end
 local main = "/src/startup.lua"
 print("sized", term.getSize())
 local base = fs.getDir(main)
 package.path = package.path .. ";/Luz/?.lua;/" .. base .. "/?.lua;/" .. base .. "/?"
+print("pkg path:")
 print(package.path)
 local lcompress = require("Luz.compress")
 local llex = require("Luz.lex")
@@ -116,7 +117,9 @@ function build_dep_tree(target)
 end
 
 local deps = build_dep_tree(main)
+print("dependicies table")
 print(textutils.serialise(deps))
+print("name\tluz_compressed\tsource\tdest")
 for mod, cfg in pairs(deps) do
     local source = package.searchpath(mod, package.path)
     local compress = cfg.luz
@@ -125,7 +128,7 @@ for mod, cfg in pairs(deps) do
     if compress then
         output = replaceFileExtension(output)
     end
-    print(mod, compress, source, output)
+    print(mod .. "\t" .. tostring(compress) .. "\t" .. source .. "\t" .. output)
     local src = fs.open(source or "", 'r')
     if src and compress then
         local data = src.readAll()
@@ -157,4 +160,6 @@ end
 local res = "/exported/" .. fs.getName(main)
 if fs.exists(res) then fs.delete(res) end
 fs.copy(main, res)
-os.shutdown()
+if _HEADLESS then
+    os.shutdown()
+end
