@@ -1,0 +1,7 @@
+{
+    "Lua.workspace.library": [
+        "/home/walksanator/.config/Code - OSS/User/globalStorage/sumneko.lua/addonManager/addons/cc-tweaked/module/library"
+    ],
+    "Lua.runtime.version": "Lua 5.3",
+    "Lua.workspace.checkThirdParty": false
+}
