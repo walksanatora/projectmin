@@ -1,0 +1,4 @@
+[submodule "Luz"]
+	path = Luz
+	url = https://github.com/MCJack123/Luz/
+	branch = lz77-adaptive
