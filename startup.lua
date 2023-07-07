@@ -23,7 +23,9 @@ if _HEADLESS then
         log.close()
     end
 end
+
 local main = "/src/startup.lua"
+
 print("sized", term.getSize())
 local base = fs.getDir(main)
 package.path = package.path .. ";/Luz/?.lua;/" .. base .. "/?.lua;/" .. base .. "/?"
