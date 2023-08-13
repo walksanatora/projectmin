@@ -47,10 +47,8 @@ if not fs.exists("/exported/luzd.lua") then
     local data = decompress.readAll()
     decompress.close()
     script_lines = string.split(data, "\n")
-    local d_tree = fs.open("Luz/token_decode_tree.lua", "r")
-    local data_tree = d_tree.readAll()
-    d_tree.close()
-    script_lines[1] = 'local token_decode_tree = [=[' .. data_tree .. ']=]'
+    local d_tree = textutils.serialise(require("Luz.token_decode_tree"), { compact = true })
+    script_lines[1] = 'local token_decode_tree = ' .. d_tree
     local out = fs.open("exported/luzd.lua", "w")
     out.write(table.concat(script_lines, "\n"))
     out.close()
@@ -137,20 +135,20 @@ table.insert(
             return nil, err
         end
     end)
-    local ppath = {}
-    for str in string.gmatch(package.path, "([^;]+)") do
-        table.insert(ppath, str)
+local ppath = {}
+for str in string.gmatch(package.path, "([^;]+)") do
+    table.insert(ppath, str)
+end
+for _,pth in ipairs(ppath) do
+    if pth:match("%.lua$") then
+        local v = {pth:gsub("%.lua$",".luz")}
+        table.insert(
+            ppath,
+            v[1]
+        )
     end
-    for _,pth in ipairs(ppath) do
-        if pth:match("%.lua$") then
-            local v = {pth:gsub("%.lua$",".luz")}
-            table.insert(
-                ppath,
-                v[1]
-            )
-        end
-    end
-    package.path = table.concat(ppath,";")
+end
+package.path = table.concat(ppath,";")
 ]=]
             else
                 script = script .. "\n" .. line
